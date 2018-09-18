@@ -43,9 +43,9 @@ public class AllUrls implements java.io.Serializable{
 	@Id
 	@Getter
 	@Setter
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	public Integer id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+//	@Column(name = "id")
+	public long id;
 	
 	@Getter
 	@Setter

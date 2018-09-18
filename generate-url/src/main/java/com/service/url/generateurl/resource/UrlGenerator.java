@@ -54,7 +54,7 @@ public class UrlGenerator {
 		HttpEntity<dbUrlSaveModel> requestEntity = new HttpEntity<>(new dbUrlSaveModel(srv,hash));
 		try {
 			ResponseEntity<dbUrlSaveModel> quoteResponse = restTemplate.exchange(dbSaveUrl, HttpMethod.POST, requestEntity, dbUrlSaveModel.class);
-			reg.shortUrl=quoteResponse.getBody().shortUrl;
+			reg.shortUrl=quoteResponse.getBody().hash;
 			reg.status = "created successfully";
 			
 			

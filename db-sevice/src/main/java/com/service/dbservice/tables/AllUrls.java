@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 //import javax.persistence.NamedNativeQueries;
 //import javax.persistence.NamedNativeQuery;
@@ -37,8 +39,14 @@ public class AllUrls implements java.io.Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
+	@Getter
+	@Setter
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	public Integer id;
+	
 	@Getter
 	@Setter
 	@Column(name = "short_url")

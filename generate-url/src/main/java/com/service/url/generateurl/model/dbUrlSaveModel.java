@@ -13,11 +13,11 @@ public class dbUrlSaveModel {
 	
 	@Getter
 	@Setter
-	public String shortUrl;
+	public String hash;
 	
-	public dbUrlSaveModel(RequestModel rm,String shortUrl) {
+	public dbUrlSaveModel(RequestModel rm,String hash) {
 		this.rm = rm;
-		this.shortUrl = shortUrl;
+		this.hash = hash;
 	}
 
 }

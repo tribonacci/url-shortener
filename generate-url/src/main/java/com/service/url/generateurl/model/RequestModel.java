@@ -19,6 +19,11 @@ public class RequestModel {
 	
 	@Getter
 	@Setter
+	public String hash;
+	
+	
+	@Getter
+	@Setter
 	public String userId;
 	
 	@Getter
@@ -28,6 +33,6 @@ public class RequestModel {
 	@Getter
 	@Setter
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
-	public Timestamp expiry;
+	public Timestamp lifeSpan;
 	
 }

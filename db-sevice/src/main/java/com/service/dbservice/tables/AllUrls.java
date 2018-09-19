@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,26 +50,31 @@ public class AllUrls implements java.io.Serializable{
 	
 	@Getter
 	@Setter
+	@JsonProperty("hash")
 	@Column(name = "short_url")
 	public String hash;
 	
 	@Getter
 	@Setter
+	@JsonProperty("userId")
 	@Column(name = "user_id")
 	public String UserId;
 	
 	@Getter
 	@Setter
+	@JsonProperty("fullUrl")
 	@Column(name = "full_url")
 	public String fullUrl;
 	
 	@Getter
 	@Setter
+	@JsonProperty("privacy")
 	@Column(name = "privacy")
 	public Boolean privacy;
 	
 	@Getter
 	@Setter
+	@JsonProperty("lifeSpan")
 	@Column(name = "life_span")
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
 	public Timestamp lifeSpan;

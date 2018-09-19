@@ -37,11 +37,11 @@ public class DbServices {
 	
 	@PostMapping("/save")
 	public AllUrls insertUrl(@RequestBody final AllUrls aul) throws HttpException{
-		System.out.println("###############################################");
-		System.out.println(aul.getFullUrl());
-		System.out.println(aul.getHash());
-		System.out.println("###############################################");
-		
+//		System.out.println("###############################################");
+//		System.out.println(aul.getFullUrl());
+//		System.out.println(aul.getHash());
+//		System.out.println("###############################################");
+//		
 		try {
 			AllUrls returnObj = urlRepository.save(aul);
 			return returnObj;

@@ -38,12 +38,12 @@ public class UrlGenerator {
 			return reg;
 		}
 		
-		if(srv.expiry == null) {
+		if(srv.lifeSpan == null) {
 			System.out.println("vik exp null");
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.YEAR, 1);
 			Date nextYear = new Date(cal.getTimeInMillis());
-			srv.expiry = new Timestamp(nextYear.getTime());
+			srv.lifeSpan = new Timestamp(nextYear.getTime());
 		}
 		
 		String hash = generateShortUrl(new StringBuilder(srv.fullUrl));
@@ -51,12 +51,13 @@ public class UrlGenerator {
 		String dbSaveUrl = "http://db-service/db/save";
 		//String dbSaveUrl = "http://192.168.0.100:8300/db/save";
 	
-		dbUrlSaveModel obj = new dbUrlSaveModel(srv,hash);
-		HttpEntity<dbUrlSaveModel> requestEntity = new HttpEntity<>(obj);
+//		dbUrlSaveModel obj = new dbUrlSaveModel(srv,hash);
+		srv.setHash(hash);
+		HttpEntity<RequestModel> requestEntity = new HttpEntity<>(srv);
 		
 		try {
 			
-			ResponseEntity<dbUrlSaveModel> quoteResponse = restTemplate.exchange(dbSaveUrl, HttpMethod.POST, requestEntity, dbUrlSaveModel.class);
+			ResponseEntity<RequestModel> quoteResponse = restTemplate.exchange(dbSaveUrl, HttpMethod.POST, requestEntity, RequestModel.class);
 			
 //			System.out.println("###############################################");
 //			System.out.println(quoteResponse.getBody().getRm().getFullUrl());

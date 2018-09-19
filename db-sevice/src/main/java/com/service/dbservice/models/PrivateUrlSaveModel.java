@@ -1,5 +1,6 @@
 package com.service.dbservice.models;
 
+import java.util.Collection;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,5 +16,11 @@ public class PrivateUrlSaveModel {
 	
 	@Getter
 	@Setter
+	public String ownerId;
+
+	@Getter
+	@Setter
 	public List<String> userId;
+
+
 }

@@ -37,20 +37,25 @@ public class DbServices {
 	
 	@PostMapping("/save")
 	public AllUrls insertUrl(@RequestBody final AllUrls aul) throws HttpException{
+		System.out.println("###############################################");
+		System.out.println(aul.getFullUrl());
+		System.out.println(aul.getHash());
+		System.out.println("###############################################");
 		
-//		try {
+		try {
 			AllUrls returnObj = urlRepository.save(aul);
 			return returnObj;
-//		}
-//		catch(Exception ex){
-//			throw new HttpException("save to Database failed");
-//		}
+		
+		}
+		catch(Exception ex){
+			throw new HttpException("save to Database failed");
+		}
 		
 	}
 	
 	@PostMapping("/mark-private")
 	public void insertPrivate(@RequestBody final PrivateUrlSaveModel psv) {
-		psv.getUserId().stream().map(userId -> new PrivateUrls(psv.shortUrl,userId)).forEach(privateUrl -> {
+		psv.getUserId().stream().map(userId ->  new PrivateUrls(psv.shortUrl,userId)).forEach(privateUrl -> {
 			puc.save(privateUrl);
 		});
 	}

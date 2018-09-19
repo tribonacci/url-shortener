@@ -50,10 +50,19 @@ public class UrlGenerator {
 		
 		String dbSaveUrl = "http://db-service/db/save";
 		//String dbSaveUrl = "http://192.168.0.100:8300/db/save";
+	
+		dbUrlSaveModel obj = new dbUrlSaveModel(srv,hash);
+		HttpEntity<dbUrlSaveModel> requestEntity = new HttpEntity<>(obj);
 		
-		HttpEntity<dbUrlSaveModel> requestEntity = new HttpEntity<>(new dbUrlSaveModel(srv,hash));
 		try {
+			
 			ResponseEntity<dbUrlSaveModel> quoteResponse = restTemplate.exchange(dbSaveUrl, HttpMethod.POST, requestEntity, dbUrlSaveModel.class);
+			
+//			System.out.println("###############################################");
+//			System.out.println(quoteResponse.getBody().getRm().getFullUrl());
+//			System.out.println("###############################################");
+			
+			
 			reg.shortUrl=quoteResponse.getBody().hash;
 			reg.status = "created successfully";
 			

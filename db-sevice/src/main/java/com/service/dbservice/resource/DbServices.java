@@ -30,8 +30,7 @@ public class DbServices {
 	public AllUrls getActualUrl(@PathVariable("shortUrl")final String shortUrl)throws HttpException {
 		
 		AllUrls au = urlRepository.findUrlByHash(shortUrl);		
-		return au;
-		
+		return au;	
 	}
 	
 	

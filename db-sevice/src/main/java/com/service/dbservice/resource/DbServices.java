@@ -33,14 +33,26 @@ public class DbServices {
 		return au;	
 	}
 	
-	
-	@PostMapping("/save")
-	public AllUrls insertUrl(@RequestBody final AllUrls aul) throws HttpException{
+
+//	public AllUrls insertUrl(@RequestBody final String jsn) throws HttpException, JSONException, ParseException{
 //		System.out.println("###############################################");
 //		System.out.println(aul.getFullUrl());
-//		System.out.println(aul.getHash());
+//		System.out.println("vik req body = " + jsn);
 //		System.out.println("###############################################");
+//		JSONObject jObject = new JSONObject(jsn);
 //		
+//		SimpleDateFormat dateFormat = new SimpleDateFormat(
+//	            "yyyy-MM-dd hh:mm:ss:SSS");
+//		
+//		AllUrls aul = new AllUrls();
+//		
+//		aul.setFullUrl(jObject.getString("fullUrl"));
+//		aul.setHash(jObject.getString("hash"));
+//		aul.setLifeSpan( new Timestamp(dateFormat.parse(jObject.getString("lifeSpan")).getTime()));
+//		aul.setUserId(jObject.getString("userId"));
+//		aul.setPrivacy(Boolean.valueOf(jObject.getString("privacy")));
+	@PostMapping("/save")
+	public AllUrls insertUrl(@RequestBody final AllUrls aul) throws HttpException{
 		try {
 			AllUrls returnObj = urlRepository.save(aul);
 			return returnObj;

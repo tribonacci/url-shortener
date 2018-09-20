@@ -13,8 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.service.url.generateurl.model.RequestModel;
 import com.service.url.generateurl.model.ResponseEntityForGenerate;
-import com.service.url.generateurl.model.dbUrlSaveModel;
-
 import java.util.*;
 import java.security.*;
 import java.sql.Date;
@@ -27,6 +25,8 @@ public class UrlGenerator {
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
+	String dbSaveUrl = "http://db-service/db/";
 	
 	@PostMapping("/generate")
 	public ResponseEntityForGenerate saveUrl(@RequestBody final RequestModel srv) throws HttpException {
@@ -46,9 +46,7 @@ public class UrlGenerator {
 			srv.lifeSpan = new Timestamp(nextYear.getTime());
 		}
 		
-		String hash = generateShortUrl(new StringBuilder(srv.fullUrl));
-		
-		String dbSaveUrl = "http://db-service/db/save";
+		String hash = generateShortUrl(new StringBuilder(srv.fullUrl),srv.userId);
 		//String dbSaveUrl = "http://192.168.0.100:8300/db/save";
 	
 //		dbUrlSaveModel obj = new dbUrlSaveModel(srv,hash);
@@ -57,7 +55,7 @@ public class UrlGenerator {
 		
 		try {
 			
-			ResponseEntity<RequestModel> quoteResponse = restTemplate.exchange(dbSaveUrl, HttpMethod.POST, requestEntity, RequestModel.class);
+			ResponseEntity<RequestModel> quoteResponse = restTemplate.exchange(dbSaveUrl+"/save", HttpMethod.POST, requestEntity, RequestModel.class);
 			
 //			System.out.println("###############################################");
 //			System.out.println(quoteResponse.getBody().getRm().getFullUrl());
@@ -80,14 +78,14 @@ public class UrlGenerator {
 		
 	}
 	
-	public String generateShortUrl(StringBuilder fullUrl) {
+	public String generateShortUrl(StringBuilder fullUrl,String userId) {
 		
 		while(true) {
 			
 			String shortUrl = getHash(fullUrl);
 			System.out.println("short url = " + shortUrl);
 			
-			if(isAvailable(shortUrl)) {
+			if(isAvailable(shortUrl,userId)) {
 				return shortUrl;
 			}
 			
@@ -96,8 +94,13 @@ public class UrlGenerator {
 		
 	}
 	
-	private boolean isAvailable(String shortUrl) {
+	private boolean isAvailable(String shortUrl,String usertId) {
 		//return true is can insert or is already present and accessible
+		RequestModel rm = restTemplate.getForObject(dbSaveUrl+"/"+shortUrl, RequestModel.class);
+		
+		if(rm != null) {
+			return false;
+		}
 		return true;
 	}
 

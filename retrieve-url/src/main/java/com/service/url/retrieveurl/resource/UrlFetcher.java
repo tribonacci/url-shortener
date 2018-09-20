@@ -27,16 +27,16 @@ public class UrlFetcher {
 		
 		req.setShortUrl(shortUrl);
 		
-		String dbfetchUrl = "http://db-service/db/";
+		String dbfetchUrl = "http://db-service/db/"+shortUrl;
 		
 		HttpEntity<RequestForFetch> requestEntity = new HttpEntity<>(req);
 		
 		try {
 			
-			ResponseEntity<RequestForFetch> quoteResponse = restTemplate.exchange(dbfetchUrl, HttpMethod.GET, requestEntity, RequestForFetch.class);
+			ResponseEntity<ResponseForFetch> quoteResponse = restTemplate.exchange(dbfetchUrl, HttpMethod.GET, requestEntity, ResponseForFetch.class);
 			
 			//rep.longUrl=quoteResponse.getBody().;
-			
+			rep.longUrl=quoteResponse.getBody().longUrl;
 			return rep;
 		}
 		catch(Exception ex){

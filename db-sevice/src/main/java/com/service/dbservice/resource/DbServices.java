@@ -28,7 +28,6 @@ public class DbServices {
 
 	@GetMapping("/{shortUrl}")
 	public AllUrls getActualUrl(@PathVariable("shortUrl")final String shortUrl)throws HttpException {
-		
 		AllUrls au = urlRepository.findUrlByHash(shortUrl);		
 		return au;	
 	}

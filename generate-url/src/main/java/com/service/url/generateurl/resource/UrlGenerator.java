@@ -1,6 +1,8 @@
 package com.service.url.generateurl.resource;
 
 import org.apache.http.HttpException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -26,50 +28,69 @@ public class UrlGenerator {
 	@Autowired
 	RestTemplate restTemplate;
 	
+	
 	String dbSaveUrl = "http://db-service/db/";
 	
 	@PostMapping("/generate")
 	public ResponseEntityForGenerate saveUrl(@RequestBody final RequestModel srv) throws HttpException {
 		
 		ResponseEntityForGenerate reg = new ResponseEntityForGenerate();
-		if(srv.userId == null || srv.privacy == null) {
-			reg.shortUrl = "Null";
-			reg.status = "Cannot created private Url without userID, Please Login";
-			return reg;
-		}
-		
-		if(srv.lifeSpan == null) {
-			System.out.println("vik exp null");
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.YEAR, 1);
-			Date nextYear = new Date(cal.getTimeInMillis());
-			srv.lifeSpan = new Timestamp(nextYear.getTime());
-		}
-		
-		String hash = generateShortUrl(new StringBuilder(srv.fullUrl),srv.userId);
-		srv.setHash(hash);
 		HttpEntity<RequestModel> requestEntity = new HttpEntity<>(srv);
+		
+		
+		//if user provides a short Url
+		if(srv.getHash() != null) {
+			if(!isAvailable(srv.hash,srv.userId)) {
+				reg.setStatus("already in Use");
+			}
+		}
+		
+		else {
+			if(srv.userId == null || srv.privacy == null) {
+				reg.shortUrl = "Null";
+				reg.status = "Cannot created private Url without userID, Please Login";
+				return reg;
+			}
+			
+			if(srv.lifeSpan == null) {
+				System.out.println("vik exp null");
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.YEAR, 1);
+				Date nextYear = new Date(cal.getTimeInMillis());
+				srv.lifeSpan = new Timestamp(nextYear.getTime());
+			}
+			
+			String hash = generateShortUrl(new StringBuilder(srv.fullUrl),srv.userId);
+			srv.setHash(hash);
+		}
 		
 		try {
 			
 			ResponseEntity<RequestModel> quoteResponse = restTemplate.exchange(dbSaveUrl+"/save", HttpMethod.POST, requestEntity, RequestModel.class);
-			
-//			System.out.println("###############################################");
-//			System.out.println(quoteResponse.getBody().getRm().getFullUrl());
-//			System.out.println("###############################################");
-			
-			
-			reg.shortUrl=quoteResponse.getBody().hash;
-			reg.status = "created successfully";
-			
-			
+
 			if(srv.privacy) {
 				//push in private db with current userID 
+				
+				JSONObject responseDetailsJson = new JSONObject();
+			    JSONArray jsonArray = new JSONArray();
+			    
+			    responseDetailsJson.put("hash", srv.getHash());
+			    responseDetailsJson.put("ownerId", srv.getUserId());
+			    jsonArray.put(srv.getUserId());
+			    responseDetailsJson.put("userId", jsonArray);
+			    
+			    HttpEntity<JSONObject> privateRequestEntity = new HttpEntity<>(responseDetailsJson);
+				ResponseEntity<JSONObject> privateQuoteResponse = restTemplate.exchange(dbSaveUrl+"/mark-private", HttpMethod.POST, privateRequestEntity, JSONObject.class);
+				
+				reg.shortUrl = privateQuoteResponse.getBody().toString();
 			}
+			
+			reg.shortUrl+=quoteResponse.getBody().hash;
+			reg.status = "created successfully";
+			
 			return reg;
 		}
 		catch(Exception ex){
-			System.out.println("vik ex = "+ ex.getMessage());
 			throw new HttpException("try again");
 		}
 		
@@ -81,8 +102,7 @@ public class UrlGenerator {
 		while(true) {
 			
 			String shortUrl = getHash(fullUrl);
-			System.out.println("short url = " + shortUrl);
-			
+
 			if(isAvailable(shortUrl,userId)) {
 				return shortUrl;
 			}
@@ -92,9 +112,14 @@ public class UrlGenerator {
 		
 	}
 	
-	private boolean isAvailable(String shortUrl,String usertId) {
-		//return true is can insert or is already present and accessible
+	//checks whether generated short URL is available 
+	private boolean isAvailable(String shortUrl,String userId) {
+		
 		RequestModel rm = restTemplate.getForObject(dbSaveUrl+"/"+shortUrl, RequestModel.class);
+		
+//		if(userId != null && rm.getUserId() == userId) {
+//			return false;
+//		}
 		
 		if(rm != null) {
 			return false;
@@ -102,6 +127,7 @@ public class UrlGenerator {
 		return true;
 	}
 
+	//generate short url for a given URL
 	public String getHash(StringBuilder fullUrl) {
 		try {
 			

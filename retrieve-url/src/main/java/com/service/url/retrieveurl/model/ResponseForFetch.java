@@ -25,6 +25,8 @@ public class ResponseForFetch {
 	@Setter
 	public Boolean privacy;
 	
-	
+	@Getter
+	@Setter
+	public String status;
 	
 }

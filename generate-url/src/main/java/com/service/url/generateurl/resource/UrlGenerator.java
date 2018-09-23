@@ -47,9 +47,6 @@ public class UrlGenerator {
 		}
 		
 		String hash = generateShortUrl(new StringBuilder(srv.fullUrl),srv.userId);
-		//String dbSaveUrl = "http://192.168.0.100:8300/db/save";
-	
-//		dbUrlSaveModel obj = new dbUrlSaveModel(srv,hash);
 		srv.setHash(hash);
 		HttpEntity<RequestModel> requestEntity = new HttpEntity<>(srv);
 		
@@ -77,6 +74,7 @@ public class UrlGenerator {
 		}
 		
 	}
+	
 	
 	public String generateShortUrl(StringBuilder fullUrl,String userId) {
 		

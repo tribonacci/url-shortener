@@ -24,8 +24,19 @@ public class Users {
 	@Getter
 	@Setter
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	public Integer id;
+	
+	
+	@Getter
+	@Setter
 	@Column(name = "user_id")
 	public Integer UserId;
+	
+	@Getter
+	@Setter
+	@Column(name = "password")
+	public String pass;
 	
 	@Getter
 	@Setter

@@ -2,6 +2,8 @@ package com.service.dbservice.resource;
 
 import java.util.List;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,7 @@ import com.service.dbservice.tables.PrivateUrls;
 @RestController
 @RequestMapping("/db")
 public class DbServices {
+	private static final Logger LOG = Logger.getLogger(DbServices.class.getName());
 	
 	@Autowired
 	private UrlRepository urlRepository;
@@ -41,6 +44,7 @@ public class DbServices {
 			result = au;
 		}
 		//use logstash
+		LOG.log(Level.INFO, "Get full url" + result);
 		return result;	
 	}
 	
@@ -51,13 +55,13 @@ public class DbServices {
 		AllUrls result = null;
 		for(PrivateUrls row : pau) {
 			  if(row.getUserId().equals(userId)){
-				  //Now get full url for given short Url as authentication is successfull
+				  //Now get full url for given short Url as authentication is successful
 				  AllUrls au = urlRepository.findUrlByHash(shortUrl);
 				  result = au;
 				  break;
 			  }
 		}
-		
+		LOG.log(Level.INFO, "Get a private url" + result);
 		return result;	
 	}
 
@@ -82,6 +86,7 @@ public class DbServices {
 	public AllUrls insertUrl(@RequestBody final AllUrls aul) throws HttpException{
 		try {
 			AllUrls returnObj = urlRepository.save(aul);
+			LOG.log(Level.INFO, "saving short URl" + returnObj);
 			return returnObj;
 		
 		}

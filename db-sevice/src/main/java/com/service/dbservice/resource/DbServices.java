@@ -1,5 +1,7 @@
 package com.service.dbservice.resource;
 
+import java.util.List;
+
 import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.service.dbservice.models.PrivateUrlSaveModel;
+import com.service.dbservice.repositories.PrivateGetAllUrl;
 import com.service.dbservice.repositories.PrivateUrlCon;
 import com.service.dbservice.repositories.UrlRepository;
 import com.service.dbservice.tables.AllUrls;
@@ -25,13 +28,38 @@ public class DbServices {
 	
 	@Autowired
 	private PrivateUrlCon puc;
+	
+	@Autowired
+	private PrivateGetAllUrl allprivateUrl;
+	
 
 	@GetMapping("/{shortUrl}")
 	public AllUrls getActualUrl(@PathVariable("shortUrl")final String shortUrl)throws HttpException {
-		AllUrls au = urlRepository.findUrlByHash(shortUrl);		
-		return au;	
+		AllUrls au = urlRepository.findUrlByHash(shortUrl);	
+		AllUrls result = null;
+		if(au!=null){
+			result = au;
+		}
+
+		return result;	
 	}
 	
+	@GetMapping("/{shortUrl}/{userId}")
+	public AllUrls getPrivateUrl(@PathVariable("shortUrl")final String shortUrl,@PathVariable("userId")final String userId)throws HttpException {
+		List <PrivateUrls> pau = allprivateUrl.findIdByHash(shortUrl);
+		
+		AllUrls result = null;
+		for(PrivateUrls row : pau) {
+			  if(row.getUserId().equals(userId)){
+				  //Now get full url for given short Url as authentication is successfull
+				  AllUrls au = urlRepository.findUrlByHash(shortUrl);
+				  result = au;
+				  break;
+			  }
+		}
+		
+		return result;	
+	}
 
 //	public AllUrls insertUrl(@RequestBody final String jsn) throws HttpException, JSONException, ParseException{
 //		System.out.println("###############################################");
